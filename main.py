@@ -7,8 +7,16 @@ import os
 import time
 import sys
 
+DELAY = 2
+#initialize led pins
+POWER_LED_PIN = 2
+DETECT_PIN = 3#for person detect
+
 #init settings
 GPIO.setmode(GPIO.BOARD)
+GPIO.setup(POWER_LED_PIN, GPIO.OUT, initial=GPIO.HIGH)
+GPIO.setup(DETECT_PIN, GPIO.OUT, initial=GPIO.LOW)
+
 #full body classifier
 pathtobody = os.path.join(sys.path[0],'case.xml')
 body_cascade = cv2.CascadeClassifier(pathtobody)
@@ -61,6 +69,7 @@ def imgProcess(angle):
         cv2.rectangle(frame,(x,y),(x+w,y+h),(255,0,0),2)
         l = min((x+w)/2,l)
         r = max((x+w)/2,r)
+        GPIO.output(DETECT_PIN, GPIO.HIGH)
 
     #changing scaling factor
     r = r/320 * 180
@@ -69,7 +78,7 @@ def imgProcess(angle):
     key = cv2.waitKey(1000)
     cv2.destroyAllWindows()
     rawCapture.truncate(0)
-
+    GPIO.output(DETECT_PIN, GPIO.LOW)
     return l + angle, r + angle
 
 #rotating camera fan fuunction
@@ -83,24 +92,24 @@ def cam_rotateNProess(flag, left, right):
     while True:
         #left position
         cam.ChangeDutyCycle(5.5)
-        time.sleep(2)
+        time.sleep(DELAY)
         l1, r1 = imgProcess(0)
 
         #mid position
         cam.ChangeDutyCycle(7.5)
-        time.sleep(2)
+        time.sleep(DELAY)
         l2, r2 = imgProcess(60)
 
         #right position
         cam.ChangeDutyCycle(9)
-        time.sleep(2)
+        time.sleep(DELAY)
         l3, r3 = imgProcess(120)
         
         #update shared variables values
         left.value =  min(l1, l2, l3) * (1/18) + 2.5
         right.value = max(r1, r2, r3) * (1/18) + 2.5
         flag.value = 1
-        time.sleep(1)
+        time.sleep(DELAY)
 
 
 
