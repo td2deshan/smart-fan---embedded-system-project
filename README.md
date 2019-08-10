@@ -1,6 +1,9 @@
 # smart-fan---embedded-system-project
 Standing fan that detect persons &amp; change rotate angle. Realtime &amp; offline via raspberry pi
-People Detection using Haar feature-based cascade classifiers
+People Detection using Haar feature-based cascade classifiers & others
+
+Resources:
+  https://github.com/djmv/MobilNet_SSD_opencv
 
 references:
   https://funvision.blogspot.com/2016/12/my-opencv-lbp-cascade-for-people.html
